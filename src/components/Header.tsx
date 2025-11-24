@@ -13,14 +13,26 @@ import {
   Tooltip,
   Divider,
 } from '@mui/material';
-import { Menu as MenuIcon, DirectionsBusFilled, Logout, AccountCircle } from '@mui/icons-material';
+import {
+  Menu as MenuIcon,
+  DirectionsBusFilled,
+  Logout,
+  AccountCircle,
+  Dashboard as DashboardIcon, // Đổi tên import icon để tránh trùng tên component
+} from '@mui/icons-material';
 import AuthModal from './AuthModal';
+import { useNavigate } from '@tanstack/react-router';
 import { useAuth } from '../context/AuthContext';
 
 const pages = ['Giới thiệu', 'Cổ đông', 'Liên hệ'];
 
 function Header() {
   const { isLoggedIn, user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  // --- STATE: Track active page ---
+  const [activePage, setActivePage] = useState<string>('');
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,6 +45,13 @@ function Header() {
     setAnchorElNav(null);
   };
 
+  // Xử lý khi click vào Menu Item (Pages)
+  const handlePageClick = (page: string) => {
+    setActivePage(page);
+    handleCloseNavMenu();
+    // navigate({ to: ... }) // Logic điều hướng của bạn ở đây
+  };
+
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -43,6 +62,7 @@ function Header() {
   const handleLogout = () => {
     handleCloseUserMenu();
     logout();
+    setActivePage(''); // Reset active page khi logout
   };
 
   const handleOpenModal = () => {
@@ -53,8 +73,16 @@ function Header() {
     setIsModalOpen(false);
   };
 
+  const handleNavigateDashboard = () => {
+    setActivePage('Dashboard'); // Set active state
+    navigate({ to: '/dashboard' });
+  };
+
+  const handleLogoClick = () => {
+    setActivePage(''); // Reset active state về trang chủ
+  };
+
   return (
-    // UPDATE 1: blue background
     <AppBar position="sticky" sx={{ bgcolor: '#0060c4', color: 'white', boxShadow: 0 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
@@ -67,11 +95,10 @@ function Header() {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="inherit" // White icon
+              color="inherit"
             >
               <MenuIcon />
             </IconButton>
-            {/* Menu dropdown on mobile */}
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -83,7 +110,15 @@ function Header() {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem
+                  key={page}
+                  onClick={() => handlePageClick(page)}
+                  // Highlight trên Mobile Menu
+                  selected={activePage === page}
+                  sx={{
+                    '&.Mui-selected': { bgcolor: 'rgba(0, 96, 196, 0.1)' },
+                  }}
+                >
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -94,20 +129,20 @@ function Header() {
               2. DESKTOP VIEW: LOGO (LEFT)
              ============================== */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-            {/* UPDATE 2: White */}
             <DirectionsBusFilled sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
             <Typography
               variant="h6"
               noWrap
               component="a"
               href="/"
+              onClick={handleLogoClick}
               sx={{
                 mr: 4,
                 display: { xs: 'none', md: 'flex' },
                 fontFamily: '"Roboto", sans-serif',
                 fontWeight: 800,
                 letterSpacing: '.1rem',
-                color: 'inherit', // UPDATE 2: inherit
+                color: 'inherit',
                 textDecoration: 'none',
                 fontSize: '1.5rem',
               }}
@@ -120,19 +155,19 @@ function Header() {
               3. MOBILE VIEW: LOGO (CENTER)
              ============================== */}
           <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', flexGrow: 1 }}>
-            {/* UPDATE 2: white */}
             <DirectionsBusFilled sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
             <Typography
               variant="h6"
               noWrap
               component="a"
               href="/"
+              onClick={handleLogoClick}
               sx={{
                 display: { xs: 'flex', md: 'none' },
                 fontFamily: '"Roboto", sans-serif',
                 fontWeight: 700,
                 letterSpacing: '.1rem',
-                color: 'inherit', // UPDATE 2: inherit
+                color: 'inherit',
                 textDecoration: 'none',
               }}
             >
@@ -149,30 +184,81 @@ function Header() {
               display: { xs: 'none', md: 'flex' },
               justifyContent: 'flex-end',
               mr: 2,
+              gap: 1, // Khoảng cách giữa các nút
             }}
           >
-            {pages.map((page) => (
+            {pages.map((page) => {
+              const isActive = activePage === page;
+              return (
+                <Button
+                  key={page}
+                  onClick={() => handlePageClick(page)}
+                  sx={{
+                    my: 2,
+                    color: 'white',
+                    display: 'block',
+                    px: 2,
+                    borderRadius: 2,
+                    // --- STYLE CHO TRẠNG THÁI ACTIVE ---
+                    bgcolor: isActive ? 'rgba(0, 0, 0, 0.2)' : 'transparent',
+                    fontWeight: isActive ? 700 : 500, // Đậm hơn khi active
+                    '&:hover': {
+                      // Khi hover: nếu đang active thì đậm thêm chút, nếu ko thì mờ nhẹ
+                      bgcolor: isActive ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.1)',
+                    },
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  {page}
+                </Button>
+              );
+            })}
+
+            {/* Dashboard Button */}
+            {isLoggedIn && (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                onClick={handleNavigateDashboard}
+                sx={{
+                  my: 2,
+                  color: 'white',
+                  display: 'block',
+                  ml: 1,
+                  px: 2,
+                  borderRadius: 2,
+                  // --- STYLE CHO DASHBOARD ACTIVE ---
+                  bgcolor: activePage === 'Dashboard' ? 'rgba(0, 0, 0, 0.2)' : 'transparent',
+                  fontWeight: activePage === 'Dashboard' ? 700 : 500,
+                  '&:hover': {
+                    bgcolor:
+                      activePage === 'Dashboard'
+                        ? 'rgba(0, 0, 0, 0.3)'
+                        : 'rgba(255, 255, 255, 0.1)',
+                  },
+                  transition: 'all 0.2s',
+                }}
               >
-                {page}
+                Dashboard
               </Button>
-            ))}
+            )}
           </Box>
 
           {/* ==============================
-              5. AUTH SECTION (ALWAYS VISIBLE - RIGHT)
+              5. AUTH SECTION (RIGHT)
              ============================== */}
           <Box sx={{ flexGrow: 0 }}>
             {isLoggedIn && user ? (
-              // --- IF LOGGED IN: SHOW AVATAR ---
               <>
+                <Tooltip title="Dashboard">
+                  <IconButton
+                    onClick={handleNavigateDashboard}
+                    sx={{ color: 'inherit', mr: 1, display: { xs: 'flex', md: 'none' } }}
+                  >
+                    <DashboardIcon />
+                  </IconButton>
+                </Tooltip>
                 <Tooltip title="Tài khoản">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                     <Avatar alt={user.email} sx={{ bgcolor: 'primary.dark' }}>
-                      {/* Use the first letter of the user's name */}
                       {user.email[0].toUpperCase()}
                     </Avatar>
                   </IconButton>
@@ -181,15 +267,9 @@ function Header() {
                   sx={{ mt: '45px' }}
                   id="menu-appbar-user"
                   anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
+                  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                   keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
+                  transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
@@ -208,9 +288,7 @@ function Header() {
                 </Menu>
               </>
             ) : (
-              // --- IF LOGGED OUT: SHOW LOGIN BUTTON ---
               <>
-                {/* Desktop Button: Nút trắng chữ xanh (giữ nguyên vì vẫn đẹp trên nền xanh) */}
                 <Button
                   variant="contained"
                   onClick={handleOpenModal}
@@ -230,15 +308,14 @@ function Header() {
                   Đăng nhập
                 </Button>
 
-                {/* Mobile Button: UPDATE 5 - Đổi sang viền trắng chữ trắng */}
                 <Button
                   onClick={handleOpenModal}
                   sx={{
                     display: { xs: 'flex', md: 'none' },
                     minWidth: 'auto',
                     p: 1,
-                    color: 'inherit', // Trắng
-                    border: '1px solid rgba(255,255,255,0.5)', // Viền trắng mờ
+                    color: 'inherit',
+                    border: '1px solid rgba(255,255,255,0.5)',
                     borderRadius: 2,
                     '&:hover': { bgcolor: 'rgba(255,255,255,0.1)', border: '1px solid white' },
                   }}

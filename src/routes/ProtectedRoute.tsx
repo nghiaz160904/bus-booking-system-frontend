@@ -14,9 +14,9 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ roles, children 
   useEffect(() => {
     if (!isLoadingUser) {
       if (!isLoggedIn) {
-        navigate({ to: '.', search: { redirect: '/login', replace: true } });
+        navigate({ to: '/' }); // Redirect to home, không dùng search params
       } else if (roles && !hasRole(roles)) {
-        navigate({ to: '.', search: { redirect: '/login', reason: 'forbidden' }, replace: true });
+        navigate({ to: '/' }); // Forbidden - redirect to home
       }
     }
   }, [isLoadingUser, isLoggedIn, roles, hasRole, navigate]);
