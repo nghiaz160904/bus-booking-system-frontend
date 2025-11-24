@@ -1,7 +1,9 @@
+export type UserRole = 'USER' | 'ADMIN';
+
 export interface UserProfile {
   id: string;
   email: string;
-  role: "USER" | "ADMIN";
+  role: 'USER' | 'ADMIN';
   createdAt: string;
 }
 

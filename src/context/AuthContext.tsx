@@ -1,48 +1,46 @@
-import React, { createContext, useContext, useMemo, useEffect, useCallback } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { apiPrivate } from "@/lib/api/axios";
-import {
-  getMe,
-  refreshToken as refreshAuthToken,
-  logoutUser,
-} from "@/lib/api/auth";
-import { type UserProfile } from "@/types/auth";
+import React, { createContext, useContext, useMemo, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { apiPrivate } from '@/lib/api/axios';
+import { getMe, refreshToken as refreshAuthToken, logoutUser } from '@/lib/api/auth';
+import { type UserProfile } from '@/types/auth';
 
 // --- 1. Define Types ---
 
 type User = UserProfile;
 
 interface AuthContextType {
-  user: User | null
-  isLoggedIn: boolean
+  user: User | null;
+  isLoggedIn: boolean;
   accessToken: string | null;
   isLoadingUser: boolean;
   login: (data: UserProfile) => void; // Function to handle successful login
-  logout: () => void // Function to handle logout
+  logout: () => void; // Function to handle logout
+  hasRole: (required: string | string[]) => boolean; // added (simplified)
+  userRole: string | null; // added
 }
 
 // --- 2. Create the Context ---
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined)
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // --- 3. Auth Provider Component ---
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   // Use React Query to fetch the user's profile
   const {
-    data: user, 
+    data: user,
     isLoading: isLoadingUser,
     isError,
-    refetch
+    refetch,
   } = useQuery({
     queryKey: ['currentUser'],
     queryFn: getMe,
     enabled: false, // !!IMPORTANT!! Only run query if we have a token
     retry: 1,
     staleTime: Infinity, // User profile data rarely changes during a session
-  })
+  });
 
   // --- Check auth status on load ---
   useEffect(() => {
@@ -52,16 +50,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // If refresh fails, isError will become true.
     refetch();
   }, [refetch]);
-  
+
   const logout = useCallback(async () => {
     // Call the backend to clear cookies
     try {
       await logoutUser();
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error('Logout failed:', error);
     } finally {
       // Always clear user state
-      queryClient.setQueryData(["currentUser"], null);
+      queryClient.setQueryData(['currentUser'], null);
       queryClient.clear();
     }
   }, [queryClient]);
@@ -70,10 +68,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     (data: UserProfile) => {
       // Login was successful, backend set cookies.
       // Just set the user state.
-      queryClient.setQueryData(["currentUser"], data);
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      queryClient.setQueryData(['currentUser'], data);
+      queryClient.invalidateQueries({ queryKey: ['currentUser'] });
     },
-    [queryClient]
+    [queryClient],
   );
 
   // Handle 'getMe' or 'refresh' failure
@@ -81,7 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (isError) {
       // This means getMe failed and the refresh interceptor also failed.
       // We are truly logged out.
-      queryClient.setQueryData(["currentUser"], null);
+      queryClient.setQueryData(['currentUser'], null);
     }
   }, [isError, queryClient]);
 
@@ -106,7 +104,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         }
         return Promise.reject(error);
-      }
+      },
     );
 
     return () => {
@@ -117,6 +115,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const isLoggedIn = !!user;
 
+  const hasRole = useCallback(
+    (required: string | string[]) => {
+      if (!user) return false;
+      const needed = Array.isArray(required) ? required : [required];
+      return needed.includes(user.role);
+    },
+    [user],
+  );
+
   const contextValue = useMemo(
     () => ({
       user: user || null,
@@ -125,23 +132,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isLoadingUser,
       login,
       logout,
+      hasRole, // expose
+      userRole: user?.role ?? null, // added
     }),
-    [user, isLoggedIn, isLoadingUser, login, logout]
+    [user, isLoggedIn, isLoadingUser, login, logout, hasRole],
   );
 
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 }
 
 // --- 5. Custom Hook for Usage ---
 
 export const useAuth = () => {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    throw new Error('useAuth must be used within an AuthProvider');
   }
-  return context
-}
+  return context;
+};

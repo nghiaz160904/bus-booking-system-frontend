@@ -6,7 +6,7 @@ import {
   CardMedia,
   CardContent,
   CardActionArea,
-  Skeleton,
+  // Skeleton,
 } from '@mui/material';
 
 const popularRoutes = [

@@ -6,7 +6,7 @@ import Header from '../components/Header.tsx';
 import Banner from '../components/home/Banner.tsx';
 import ExclusiveDeal from '../components/home/ExclusiveDeal.tsx';
 
-function App() {
+function HomePage() {
   return (
     <>
       <Header />
@@ -24,4 +24,4 @@ function App() {
   );
 }
 
-export default App;
+export default HomePage;
