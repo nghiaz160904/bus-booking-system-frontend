@@ -161,14 +161,7 @@ function Header() {
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{
-                  my: 2,
-                  color: 'inherit', // UPDATE 3: Chữ màu trắng
-                  display: 'block',
-                  fontWeight: 600,
-                  // Hover hiệu ứng mờ nhẹ thay vì đổi màu
-                  '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
-                }}
+                sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}
               </Button>
@@ -184,18 +177,9 @@ function Header() {
               <>
                 <Tooltip title="Tài khoản">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    {/* UPDATE 4: Avatar nền trắng chữ xanh cho nổi bật */}
-                    <Avatar
-                      alt={user.email}
-                      sx={{
-                        bgcolor: 'white',
-                        color: '#0060c4',
-                        width: 40,
-                        height: 40,
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      {user.email ? user.email[0].toUpperCase() : 'U'}
+                    <Avatar alt={user.email} sx={{ bgcolor: 'primary.dark' }}>
+                      {/* Use the first letter of the user's name */}
+                      {user.email[0].toUpperCase()}
                     </Avatar>
                   </IconButton>
                 </Tooltip>
@@ -203,9 +187,15 @@ function Header() {
                   sx={{ mt: '45px' }}
                   id="menu-appbar-user"
                   anchorEl={anchorElUser}
-                  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
                   keepMounted
-                  transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
@@ -268,8 +258,6 @@ function Header() {
           </Box>
         </Toolbar>
       </Container>
-
-      {/* Auth Modal Component */}
       <AuthModal open={isModalOpen} onClose={handleCloseModal} initialView="login" />
     </AppBar>
   );
