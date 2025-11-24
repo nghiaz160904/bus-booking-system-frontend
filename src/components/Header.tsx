@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   AppBar,
   Box,
@@ -11,23 +11,20 @@ import {
   MenuItem,
   Avatar,
   Tooltip,
-} from "@mui/material";
-import { Menu as MenuIcon, Adb as AdbIcon } from "@mui/icons-material";
-import AuthModal from "./AuthModal";
-import { useAuth } from "../context/AuthContext";
+} from '@mui/material';
+import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
+import { Menu as MenuIcon } from '@mui/icons-material';
+import AuthModal from './AuthModal';
+import { useAuth } from '../context/AuthContext';
 
-const pages = ["Giới thiệu", "Cổ đông", "Liên hệ"];
+const pages = ['Giới thiệu', 'Cổ đông', 'Liên hệ'];
 
 function Header() {
   const { isLoggedIn, user, logout } = useAuth();
 
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -64,25 +61,25 @@ function Header() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <DirectionsBusIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
             component="a"
             sx={{
               mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'monospace',
               fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
             }}
           >
             VEXESIEURE
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -97,27 +94,27 @@ function Header() {
               id="menu-appbar"
               anchorEl={anchorElNav}
               anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
+                vertical: 'bottom',
+                horizontal: 'left',
               }}
               keepMounted
               transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
+                vertical: 'top',
+                horizontal: 'left',
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{ display: { xs: "block", md: "none" } }}
+              sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: "center" }}>{page}</Typography>
+                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
 
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          <DirectionsBusIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -125,13 +122,13 @@ function Header() {
             href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
-              display: { xs: "flex", md: "none" },
+              display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
-              fontFamily: "monospace",
+              fontFamily: 'monospace',
               fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
             }}
           >
             LOGO
@@ -140,47 +137,44 @@ function Header() {
           <Box
             sx={{
               flexGrow: 1,
-              display: { xs: "none", md: "flex", justifyContent: "flex-end" },
+              display: { xs: 'none', md: 'flex', justifyContent: 'flex-end' },
             }}
           >
             {pages.map((page) => (
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}
               </Button>
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0, display: { xs: "none", md: "flex" }, ml: 2 }}>
+          <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' }, ml: 2 }}>
             {isLoggedIn && user ? (
               // --- If LOGGED IN: Show Avatar and Menu ---
               <>
                 <Tooltip title="Mở cài đặt">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar
-                      alt={user.email}
-                      sx={{ bgcolor: "primary.dark" }}
-                    >
+                    <Avatar alt={user.email} sx={{ bgcolor: 'primary.dark' }}>
                       {/* Use the first letter of the user's name */}
                       {user.email[0].toUpperCase()}
                     </Avatar>
                   </IconButton>
                 </Tooltip>
                 <Menu
-                  sx={{ mt: "45px" }}
+                  sx={{ mt: '45px' }}
                   id="menu-appbar-user"
                   anchorEl={anchorElUser}
                   anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
+                    vertical: 'top',
+                    horizontal: 'right',
                   }}
                   keepMounted
                   transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
+                    vertical: 'top',
+                    horizontal: 'right',
                   }}
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
@@ -199,10 +193,10 @@ function Header() {
                 variant="contained"
                 onClick={handleOpenModal}
                 sx={{
-                  backgroundColor: "white",
-                  color: "primary.main",
-                  "&:hover": {
-                    backgroundColor: "grey.100",
+                  backgroundColor: 'white',
+                  color: 'primary.main',
+                  '&:hover': {
+                    backgroundColor: 'grey.100',
                   },
                 }}
               >
@@ -212,11 +206,7 @@ function Header() {
           </Box>
         </Toolbar>
       </Container>
-      <AuthModal
-        open={isModalOpen}
-        onClose={handleCloseModal}
-        initialView="login"
-      />
+      <AuthModal open={isModalOpen} onClose={handleCloseModal} initialView="login" />
     </AppBar>
   );
 }
