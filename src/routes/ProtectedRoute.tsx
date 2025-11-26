@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 
 interface ProtectedRouteProps {
   roles?: string | string[];

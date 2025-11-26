@@ -1,28 +1,11 @@
-import React, { createContext, useContext, useMemo, useEffect, useCallback } from 'react';
+import React, { useMemo, useEffect, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiPrivate } from '@/lib/api/axios';
 import { getMe, refreshToken as refreshAuthToken, logoutUser } from '@/lib/api/auth';
 import { type UserProfile } from '@/types/auth';
 
-// --- 1. Define Types ---
-
-type User = UserProfile;
-
-interface AuthContextType {
-  user: User | null;
-  isLoggedIn: boolean;
-  accessToken: string | null;
-  isLoadingUser: boolean;
-  login: (data: UserProfile) => void; // Function to handle successful login
-  logout: () => void; // Function to handle logout
-  hasRole: (required: string | string[]) => boolean; // added (simplified)
-}
-
-// --- 2. Create the Context ---
-
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// --- 3. Auth Provider Component ---
+// Import the Context from the new file
+import { AuthContext } from '../hooks/useAuth';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
@@ -36,28 +19,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   } = useQuery({
     queryKey: ['currentUser'],
     queryFn: getMe,
-    enabled: false, // !!IMPORTANT!! Only run query if we have a token
+    enabled: false,
     retry: 1,
-    staleTime: Infinity, // User profile data rarely changes during a session
+    staleTime: Infinity,
   });
 
   // --- Check auth status on load ---
   useEffect(() => {
-    // Try to get user profile. This will either succeed or fail (401).
-    // If it fails, the interceptor will try to refresh.
-    // If refresh succeeds, getMe will be re-run and succeed.
-    // If refresh fails, isError will become true.
     refetch();
   }, [refetch]);
 
   const logout = useCallback(async () => {
-    // Call the backend to clear cookies
     try {
       await logoutUser();
     } catch (error) {
       console.error('Logout failed:', error);
     } finally {
-      // Always clear user state
       queryClient.setQueryData(['currentUser'], null);
       queryClient.clear();
     }
@@ -65,24 +42,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(
     (data: UserProfile) => {
-      // Login was successful, backend set cookies.
-      // Just set the user state.
       queryClient.setQueryData(['currentUser'], data);
       queryClient.invalidateQueries({ queryKey: ['currentUser'] });
     },
     [queryClient],
   );
 
-  // Handle 'getMe' or 'refresh' failure
   useEffect(() => {
     if (isError) {
-      // This means getMe failed and the refresh interceptor also failed.
-      // We are truly logged out.
       queryClient.setQueryData(['currentUser'], null);
     }
   }, [isError, queryClient]);
 
-  // --- 4. Setup Axios Interceptors ---
+  // --- Setup Axios Interceptors ---
   useEffect(() => {
     const responseIntercept = apiPrivate.interceptors.response.use(
       (response) => response,
@@ -91,14 +63,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (error.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
           try {
-            // --- CHANGED: refreshAuthToken() returns UserProfile ---
             const newUser = await refreshAuthToken();
-            // We logged in successfully, set the user
             login(newUser);
-            // Retry the original request (it will now have the new cookie)
             return apiPrivate(originalRequest);
           } catch (refreshError) {
-            logout(); // Force logout
+            logout();
             return Promise.reject(refreshError);
           }
         }
@@ -107,10 +76,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     );
 
     return () => {
-      // apiPrivate.interceptors.request.eject(requestIntercept);
       apiPrivate.interceptors.response.eject(responseIntercept);
     };
-  }, [login, logout]); // Re-run when auth functions change
+  }, [login, logout]);
 
   const isLoggedIn = !!user;
 
@@ -131,20 +99,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isLoadingUser,
       login,
       logout,
-      hasRole, // expose
+      hasRole,
     }),
     [user, isLoggedIn, isLoadingUser, login, logout, hasRole],
   );
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 }
-
-// --- 5. Custom Hook for Usage ---
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};

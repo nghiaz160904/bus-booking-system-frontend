@@ -20,7 +20,7 @@ import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import SummaryCards from './SummaryCards';
 import ActivityList from './ActivityList';
 import RoleAdaptiveWidget from './RoleAdaptiveWidget';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 
 const Dashboard: React.FC = () => {
   const { user, isLoadingUser } = useAuth();

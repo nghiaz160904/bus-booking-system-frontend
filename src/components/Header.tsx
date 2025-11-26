@@ -22,7 +22,7 @@ import {
 } from '@mui/icons-material';
 import AuthModal from './AuthModal';
 import { useNavigate, useLocation } from '@tanstack/react-router';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 
 const pages = ['Giới thiệu', 'Cổ đông', 'Liên hệ'];
 

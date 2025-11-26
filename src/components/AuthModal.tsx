@@ -19,7 +19,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from '@tanstack/react-form';
 import { LoginSchema, RegisterSchema } from '@/schemas/auth';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import { loginUser, registerUser } from '@/lib/api/auth';
 import type { UserProfile } from '@/types/auth';
 import { getAPIUrl } from '@/config/api';

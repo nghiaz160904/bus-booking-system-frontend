@@ -7,7 +7,7 @@ import {
   Avatar,
   Grid as Grid, // Sử dụng Grid2 cho MUI v6
 } from '@mui/material';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import type { SummaryMetric } from '@/types/dashboard';
 import { summaryMetrics } from '@/types/dashboard';
 

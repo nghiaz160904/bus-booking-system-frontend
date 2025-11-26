@@ -2,12 +2,13 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import * as TanStackQueryProvider from './integrations/tanstack-query/root-provider.tsx';
+import { getContext } from './integrations/tanstack-query/client.ts';
 import './styles.css';
 import reportWebVitals from './reportWebVitals.ts';
 import { routeTree } from './routeTree.tsx';
 import { AuthProvider } from './context/AuthContext.tsx';
 
-const TanStackQueryProviderContext = TanStackQueryProvider.getContext();
+const TanStackQueryProviderContext = getContext();
 const router = createRouter({
   routeTree,
   context: {

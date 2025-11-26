@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import { CircularProgress, Box, Typography } from '@mui/material';
 import { apiClient } from '@/lib/api/axios';
 

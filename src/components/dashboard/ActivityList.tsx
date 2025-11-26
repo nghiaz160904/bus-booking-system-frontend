@@ -17,7 +17,7 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import InboxIcon from '@mui/icons-material/Inbox'; // Icon cho trạng thái trống
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import { activities } from '@/types/dashboard';
 
 const ActivityList: React.FC = () => {
