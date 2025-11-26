@@ -1,11 +1,11 @@
 {
-  "homepage": "https://nghiaz160904.github.io/bus-booking-system-frontend/",
+  "homepage": "https://bus-booking-system-finalproject.github.io/bus-booking-system-frontend/",
   "name": "ve-xe-sieu-re",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && tsc",
+    "build": "eslint . && vite build && tsc",
     "serve": "vite preview",
     "test": "vitest run",
     "start": "vite start",
