@@ -11,9 +11,13 @@ vi.mock('@/lib/api/auth', () => ({
   registerUser: vi.fn().mockResolvedValue({}),
 }));
 
-vi.mock('../context/AuthContext', () => ({
-  useAuth: () => ({ login: vi.fn() }),
-}));
+vi.mock('../context/AuthContext', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../context/AuthContext')>();
+  return {
+    ...actual,
+    useAuth: () => ({ login: vi.fn() }),
+  };
+});
 
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => vi.fn(),
