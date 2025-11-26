@@ -30,7 +30,6 @@ export const registerUser = async (data: RegisterType): Promise<RegisterResponse
 /**
  * Handles user login
  * POST /user/login
- * Now returns UserProfile, not tokens
  */
 export const loginUser = async (data: LoginType): Promise<UserProfile> => {
   try {
@@ -46,7 +45,6 @@ export const loginUser = async (data: LoginType): Promise<UserProfile> => {
 /**
  * Handles refreshing the access token
  * POST /user/refresh
- * Now takes no body and returns UserProfile
  */
 export const refreshToken = async (): Promise<UserProfile> => {
   try {
