@@ -8,8 +8,9 @@ import {
   Button,
   Divider,
   IconButton,
-  Menu,
-  MenuItem,
+  Popover,
+  Autocomplete,
+  TextField,
 } from '@mui/material';
 import {
   DirectionsBusFilled,
@@ -226,10 +227,19 @@ export default function BannerPage() {
     setSelectingType(null);
   };
 
-  const handleSelectProvince = (province: string) => {
-    if (selectingType === 'origin') setOrigin(province);
-    if (selectingType === 'destination') setDestination(province);
-    handleCloseMenu();
+  const handleSelectProvince = (newValue: string | null) => {
+    if (selectingType === 'origin' && newValue !== null) {
+      setOrigin(newValue);
+    }
+    if (selectingType === 'destination' && newValue !== null) {
+      setDestination(newValue);
+    }
+
+    // Only close the popup if the user actually selected a province.
+    // If they cleared the text (newValue is null), keep it open so they can type.
+    if (newValue) {
+      handleCloseMenu();
+    }
   };
 
   const handleSwapLocation = () => {
@@ -633,28 +643,56 @@ export default function BannerPage() {
         </Paper>
       </Container>
 
-      {/* DROPDOWN MENU */}
-      <Menu
-        anchorEl={anchorEl}
+      {/* 3. CHANGED: POPOVER WITH AUTOCOMPLETE INSTEAD OF MENU */}
+      <Popover
         open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
         onClose={handleCloseMenu}
-        PaperProps={{
-          style: {
-            maxHeight: 300,
-            width: '250px',
-          },
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
         }}
       >
-        {PROVINCES.map((province) => (
-          <MenuItem
-            key={province}
-            onClick={() => handleSelectProvince(province)}
-            selected={province === (selectingType === 'origin' ? origin : destination)}
-          >
-            {province}
-          </MenuItem>
-        ))}
-      </Menu>
+        <Box sx={{ width: 300, p: 2 }}>
+          <Autocomplete
+            id="city-autocomplete"
+            options={PROVINCES}
+            autoHighlight
+            openOnFocus
+            value={selectingType === 'origin' ? origin : destination}
+            onChange={(_event, newValue) => {
+              handleSelectProvince(newValue);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={selectingType === 'origin' ? 'Chọn điểm đi' : 'Chọn điểm đến'}
+                variant="outlined"
+                size="small"
+                autoFocus
+                placeholder="Nhập tên tỉnh thành..."
+              />
+            )}
+            // Customize list items
+            renderOption={(props, option) => {
+              // Extract the `key` from the props object
+              const { key, ...restProps } = props;
+
+              // Pass `key` directly to the Box component, and spread the rest of the props
+              return (
+                <Box component="li" key={key} {...restProps}>
+                  <LocationOn sx={{ mr: 1, color: 'text.secondary', fontSize: 20 }} />
+                  {option}
+                </Box>
+              );
+            }}
+          />
+        </Box>
+      </Popover>
 
       {/* 3. BOTTOM TRUST BAR */}
       <Box
