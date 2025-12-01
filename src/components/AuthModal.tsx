@@ -56,7 +56,7 @@ function LoginForm({
       // 3. Navigation logic
       if (data.user.role === 'ADMIN') {
         setTimeout(() => {
-          navigate({ to: '/dashboard' });
+          navigate({ to: '/admin' });
         }, 1500);
       }
     },

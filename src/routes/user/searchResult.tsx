@@ -1,9 +1,9 @@
 import { createRoute } from '@tanstack/react-router';
-import { rootRoute } from './root.tsx';
-import SearchResultsPage from '../pages/SearchResultsPage.tsx';
+import SearchResultsPage from '../../pages/SearchResultsPage.tsx';
+import { indexRoute } from '../IndexRoute.tsx';
 
 export const searchResultRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => indexRoute,
   path: '/search-results',
   component: () => <SearchResultsPage />,
 });

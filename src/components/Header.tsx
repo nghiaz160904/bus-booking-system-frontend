@@ -75,7 +75,7 @@ function Header() {
   };
 
   const handleNavigateDashboard = () => {
-    navigate({ to: '/dashboard' });
+    navigate({ to: '/admin' });
   };
 
   const handleLogoClick = () => {
@@ -125,7 +125,7 @@ function Header() {
                 <MenuItem
                   onClick={() => {
                     handleCloseNavMenu();
-                    navigate({ to: '/dashboard' });
+                    navigate({ to: '/admin' });
                   }}
                   sx={{
                     '&.Mui-selected': { bgcolor: 'rgba(0, 96, 196, 0.1)' },
