@@ -19,7 +19,6 @@ import {
   AcUnit,
   LocalDrink,
   VerifiedUser,
-  FlashOn,
 } from '@mui/icons-material';
 import { type Trip } from '@/types/trip';
 
@@ -88,7 +87,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
             // 32% for First Column (Tightens the gap)
             // 1fr for Middle (Takes remaining space, pushes 3rd col to far right)
             // 25% for Last Column (Keeps price aligned right)
-            gridTemplateColumns: { xs: '1fr', md: '36% 1fr 25%' },
+            gridTemplateColumns: { xs: '1fr', md: '42% 35% 20%' },
             gap: 2, // Adds space between columns
           }}
         >
@@ -144,7 +143,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
                       <Typography variant="h6" fontWeight={700} lineHeight={1}>
                         {formatTime(departure_time)}
                       </Typography>
-                      <Typography variant="body1" color="text.secondary" noWrap sx={{ mt: 0.2 }}>
+                      <Typography variant="body2" color="text.secondary" noWrap sx={{ mt: 0.2 }}>
                         • {from_station}
                       </Typography>
                     </Stack>
@@ -180,7 +179,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
                       <Typography variant="h6" fontWeight={700} lineHeight={1}>
                         {formatTime(arrival_time)}
                       </Typography>
-                      <Typography variant="body1" color="text.secondary" noWrap sx={{ mt: 0.2 }}>
+                      <Typography variant="body2" color="text.secondary" noWrap sx={{ mt: 0.2 }}>
                         • {to_station}
                       </Typography>
                     </Stack>
@@ -236,12 +235,6 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
 
                   {/* Chips Row (Now under the icons) */}
                   <Stack direction="row" spacing={1}>
-                    <Chip
-                      icon={<FlashOn style={{ fontSize: 14 }} />}
-                      label="Vé tức thì"
-                      size="small"
-                      sx={{ height: 18, fontSize: '0.65rem', bgcolor: '#e3f2fd', color: '#0060c4' }}
-                    />
                     <Chip
                       icon={<VerifiedUser style={{ fontSize: 14 }} />}
                       label="An toàn"

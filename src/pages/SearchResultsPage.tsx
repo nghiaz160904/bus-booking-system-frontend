@@ -1,10 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { Box, Container, Typography, Stack, Breadcrumbs, Link } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
-import SearchIcon from '@mui/icons-material/Search';
+import { Box, Container, Stack } from '@mui/material';
 
 import FilterSidebar, { type FilterState } from '@/components/search/FilterSidebar';
 import TripList from '@/components/search/TripList';
+import SearchWidget from '@/components/search/SearchWidget';
 import { MOCK_TRIPS } from '@/data/mockTrips';
 
 // Constants
@@ -79,34 +78,11 @@ const SearchResultsPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: '#f4f6f8', minHeight: '100vh', pb: 8 }}>
+    <Box sx={{ bgcolor: '#f4f6f8', minHeight: '100vh', pb: 8, maxWidth: '85%', mx: 'auto' }}>
       {/* 1. HEADER */}
-      <Box sx={{ bgcolor: 'white', borderBottom: '1px solid #e0e0e0', py: 2, mb: 4 }}>
-        <Container maxWidth="xl">
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link
-              underline="hover"
-              sx={{ display: 'flex', alignItems: 'center' }}
-              color="inherit"
-              href="/"
-            >
-              <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-              Trang chủ
-            </Link>
-            <Typography sx={{ display: 'flex', alignItems: 'center' }} color="text.primary">
-              <SearchIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-              Kết quả tìm kiếm
-            </Typography>
-          </Breadcrumbs>
-
-          <Typography variant="h5" fontWeight={800} sx={{ mt: 1 }}>
-            Vé xe từ Sài Gòn đi Đà Lạt
-          </Typography>
-          {/* Show count of FILTERED results */}
-          <Typography variant="body2" color="text.secondary">
-            {filteredTrips.length} kết quả được tìm thấy
-          </Typography>
-        </Container>
+      <Box sx={{ borderBottom: '1px solid #e0e0e0', py: 2, mb: 4, mx: 'auto', width: '100%' }}>
+        {/* SEARCH WIDGET HERE */}
+        <SearchWidget />
       </Box>
 
       {/* 2. MAIN CONTENT */}
