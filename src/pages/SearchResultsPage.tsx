@@ -227,7 +227,7 @@ const SearchResultsPage: React.FC = () => {
                 <SortBar
                   currentSort={sortOption}
                   onSortChange={handleSortChange}
-                  resultCount={tripData?.data?.length || 0}
+                  resultCount={tripData?.pagination?.total || 0}
                 />
                 <TripList
                   trips={tripData?.data || []}
