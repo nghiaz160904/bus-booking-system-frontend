@@ -28,13 +28,8 @@ export const ADMIN_TABS: AdminTabItem[] = [
     path: '/admin/routes',
   },
   {
-    label: 'Seat Config',
-    icon: Armchair,
-    path: '/admin/seat-types',
-  },
-  {
     label: 'Trip Scheduling',
     icon: CalendarClock,
     path: '/admin/trips',
-  }
+  },
 ];
